@@ -7,10 +7,10 @@ agent:
 
 strategy:
   type: conservative         # Options: conservative, retry_once, explore_all
-  max_steps: 6              # Maximum tool-use iterations before termination
+  max_steps: 10              # Maximum tool-use iterations before termination
 
 memory:
-  top_k: 6
+  top_k: 10
   type_filter: tool_output   # Options: tool_output, fact, query, all
   embedding_model: nomic-embed-text
   embedding_url: http://localhost:11434/api/embeddings
