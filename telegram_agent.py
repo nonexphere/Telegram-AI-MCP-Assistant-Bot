@@ -17,7 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Bot token from test.ipynb
-BOT_TOKEN = "7863805213:AAEaEoSCF7h78y0US6W2pV31wyeumjP_mF4"
+BOT_TOKEN = "<ENTER YOUR BOT TOKEN HERE>"
 
 # Global MultiMCP instance to reuse across requests
 global_multi_mcp = None
