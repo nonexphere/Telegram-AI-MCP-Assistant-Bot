@@ -7,10 +7,10 @@ agent:
 
 strategy:
   type: conservative         # Options: conservative, retry_once, explore_all
-  max_steps: 3               # Maximum tool-use iterations before termination
+  max_steps: 6              # Maximum tool-use iterations before termination
 
 memory:
-  top_k: 3
+  top_k: 6
   type_filter: tool_output   # Options: tool_output, fact, query, all
   embedding_model: nomic-embed-text
   embedding_url: http://localhost:11434/api/embeddings
@@ -27,6 +27,9 @@ persona:
 mcp_servers:
   - id: gmail
     script: gmail_server.py
+    cwd: D:\Projects\EAG_V1\Session8_Assignment\telegram-multi-mcp-server-app
+  - id: gdrive
+    script: mcp_gdrive_server.py
     cwd: D:\Projects\EAG_V1\Session8_Assignment\telegram-multi-mcp-server-app
   - id: math
     script: mcp_server_1.py
@@ -77,3 +80,6 @@ mcp_servers:
 #   type_filter: tool_output
 # tone: concise, helpful
 # config/profiles.yaml
+
+
+# Find the Current Point Standings of F1 Racers, then put that into a Google Excel Sheet, and then share the link to this sheet with me (shettysaish20@gmail.com)
