@@ -174,3 +174,4 @@ if __name__ == "__main__":
 
 # User messsage:
 # Find the Current Point Standings of F1 Racers, then put that into a Google Excel Sheet, and then share the spreadsheet link with me (shettysaish20@gmail.com) with writer access. Reply with a completion message
+# Can you add the sum of first 50 prime numbers and send the result to shettysaish20@gmail.com? Respond to me with a completion message.

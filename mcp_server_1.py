@@ -30,7 +30,11 @@ class PythonCodeOutput(BaseModel):
     result: str
 
 
-mcp = FastMCP("Calculator")
+mcp = FastMCP(
+    "Calculator",
+    host="0.0.0.0",
+    port=8000
+    )
 
 
 @mcp.tool()
@@ -270,5 +274,6 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "dev":
             mcp.run()  # Run without transport for dev server
     else:
-        mcp.run(transport="stdio")  # Run with stdio for direct execution
+        # Use SSE transport on port 8000
+        mcp.run(transport="sse")  
         print("\nShutting down...")
