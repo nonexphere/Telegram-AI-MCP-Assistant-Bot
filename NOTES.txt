@@ -1,0 +1,302 @@
+# Telegram AI Assistant Bot - Comprehensive Project Report
+
+## Project Overview
+The Telegram AI Assistant Bot, named Cortex-R, is a reasoning-driven AI agent that interacts with users via Telegram. It leverages multiple Model Context Protocol (MCP) servers to perform various tasks such as web searches, document processing, mathematical calculations, and Google services integration (e.g., Gmail and Google Sheets).
+
+## Project Structure
+```
+Telegram-AI-MCP-Assistant-Bot/
+├── .gitignore
+├── .python-version
+├── agent.py
+├── gmail_server.py
+├── LICENSE
+├── mcp_gdrive_server.py
+├── mcp_server_1.py
+├── mcp_server_2.py
+├── mcp_server_3.py
+├── models.py
+├── pyproject.toml
+├── README.md
+├── telegram_agent.py
+├── uv.lock
+├── config/
+│   ├── models.json
+│   └── profiles.yaml
+├── core/
+│   ├── context.py
+│   ├── loop.py
+│   ├── session.py
+│   └── strategy.py
+└── modules/
+    ├── action.py
+    ├── decision.py
+    ├── memory.py
+    ├── model_manager.py
+    ├── perception.py
+    └── tools.py
+```
+
+## Core Components
+
+### 1. Telegram Bot Integration
+- **File**: `telegram_agent.py`
+- **Role**: Handles user messages and commands via Telegram.
+- **Features**:
+  - Uses the `python-telegram-bot` library.
+  - Processes user queries using the Cortex-R agent.
+  - Manages commands like `/start` and `/help`.
+
+### 2. Agent Loop
+- **File**: `core/loop.py`
+- **Role**: Manages the main execution loop of the agent.
+- **Features**:
+  - Handles perception, planning, and tool execution.
+  - Manages session state and tool call tracking.
+  - Implements the agent's strategy for decision-making.
+
+### 3. Session Management
+- **File**: `core/session.py`
+- **Role**: Manages communication with multiple MCP servers.
+- **Features**:
+  - Uses `stdio` and `sse` transport protocols.
+  - Dynamically discovers tools from MCP servers.
+  - Handles tool calls and session management.
+
+### 4. Strategy
+- **File**: `core/strategy.py`
+- **Role**: Implements planning strategies for decision-making.
+- **Features**:
+  - Supports different strategies like conservative, retry-once, and explore-all.
+  - Wraps around the decision-making logic.
+  - Adds planning context such as past failures, retries, and agent profile.
+
+## Modules
+
+### 1. Action
+- **File**: `modules/action.py`
+- **Role**: Handles parsing function call strings into tool names and argument dictionaries.
+- **Features**:
+  - Defines the `ToolCallResult` class.
+  - Parses function call strings into structured data.
+
+### 2. Decision
+- **File**: `modules/decision.py`
+- **Role**: Generates the next step plan for the agent.
+- **Features**:
+  - Uses the `ModelManager` to generate text based on perception, memory items, and tool descriptions.
+  - Returns a structured plan for either tool usage or a final answer.
+
+### 3. Memory
+- **File**: `modules/memory.py`
+- **Role**: Manages embedding-based semantic memory using FAISS.
+- **Features**:
+  - Stores and retrieves `MemoryItem` objects.
+  - Uses local embedding server for vectorization.
+  - Filters memory based on type, tags, and session.
+
+### 4. Model Manager
+- **File**: `modules/model_manager.py`
+- **Role**: Handles model management for text generation.
+- **Features**:
+  - Supports different model types such as Gemini and Ollama.
+  - Includes methods for generating text based on prompts.
+
+### 5. Perception
+- **File**: `modules/perception.py`
+- **Role**: Uses LLMs to extract structured information from user input.
+- **Features**:
+  - Extracts intent, entities, and tool hints.
+  - Uses the `ModelManager` to generate text based on user input and available tools.
+  - Parses the response into a `PerceptionResult` object.
+
+### 6. Tools
+- **File**: `modules/tools.py`
+- **Role**: Provides utility functions for managing and describing tools.
+- **Features**:
+  - Summarizes tools for LLM prompts.
+  - Filters tools based on hints.
+  - Creates a map of tool names to tool objects for quick lookup.
+
+## Configuration
+
+### 1. Profiles
+- **File**: `config/profiles.yaml`
+- **Role**: Defines agent settings, including strategy, memory configuration, and MCP server details.
+- **Features**:
+  - Configures agent behavior and personality traits.
+  - Specifies MCP server configurations.
+
+### 2. Models
+- **File**: `config/models.json`
+- **Role**: Specifies the models used for text generation and embeddings.
+- **Features**:
+  - Configures model types and settings.
+
+### 3. Environment Variables
+- **File**: `.env`
+- **Role**: Stores sensitive information like API keys and file paths.
+- **Features**:
+  - Configures environment-specific settings.
+
+## Features
+
+### 1. Telegram Integration
+- **Description**: The bot interacts with users through Telegram, responding to their queries and tasks.
+- **Implementation**: `telegram_agent.py`
+
+### 2. Multi-MCP Server Support
+- **Description**: Utilizes multiple MCP servers for diverse functionalities.
+- **Implementation**: `core/session.py`
+- **Features**:
+  - Gmail integration for email management.
+  - Google Sheets integration for spreadsheet operations.
+  - Web search capabilities using DuckDuckGo.
+  - Document processing and semantic search.
+  - Mathematical calculations.
+
+### 3. Dynamic Tool Discovery
+- **Description**: Automatically discovers tools from MCP servers during initialization.
+- **Implementation**: `core/session.py`
+
+### 4. Customizable Agent Strategy
+- **Description**: Supports different strategies like conservative, retry-once, and explore-all.
+- **Implementation**: `core/strategy.py`
+
+### 5. Memory Management
+- **Description**: Retrieves and stores memory items to enhance task-solving capabilities.
+- **Implementation**: `modules/memory.py`
+
+### 6. Configurable Persona
+- **Description**: Allows customization of tone, verbosity, and behavior.
+- **Implementation**: `config/profiles.yaml`
+
+## Workflow
+
+### 1. Initialization
+- **Description**: The bot loads MCP server configurations from `profiles.yaml`.
+- **Implementation**: `telegram_agent.py`
+- **Features**:
+  - Initializes the `MultiMCP` dispatcher to discover tools from all configured MCP servers.
+
+### 2. User Interaction
+- **Description**: Users interact with the bot via Telegram.
+- **Implementation**: `telegram_agent.py`
+- **Features**:
+  - The bot processes user messages and determines the required tools to fulfill the task.
+
+### 3. Task Execution
+- **Description**: The agent uses perception to understand the user query.
+- **Implementation**: `core/loop.py`
+- **Features**:
+  - Plans the next action using the defined strategy.
+  - Executes the required tool from the appropriate MCP server.
+  - Retrieves results and responds to the user.
+
+### 4. Memory Management
+- **Description**: Stores tool outputs and user queries as memory items.
+- **Implementation**: `modules/memory.py`
+- **Features**:
+  - Retrieves relevant memories to assist in task-solving.
+
+## Installation
+
+### 1. Clone the Repository
+- **Command**: `git clone <repository-url>`
+- **Description**: Clones the repository to the local machine.
+
+### 2. Sync Dependencies
+- **Command**: `uv sync`
+- **Description**: Syncs dependencies using uv.
+
+### 3. Set Up Environment Variables
+- **File**: `.env`
+- **Description**: Sets up environment variables in the `.env` file.
+
+### 4. Start the Telegram Bot
+- **Command**: `uv run telegram_agent.py`
+- **Description**: Starts the Telegram bot.
+
+## Usage
+
+### 1. Start the Bot
+- **Command**: `/start`
+- **Description**: Starts the bot on Telegram.
+
+### 2. Send Queries or Tasks
+- **Examples**:
+  - "Find the current F1 standings and share them in a Google Sheet."
+  - "Send an email to example@gmail.com with the subject 'Meeting Update'."
+
+## Contributing
+
+### 1. Fork the Repository
+- **Description**: Fork the repository to your account.
+
+### 2. Create a New Branch
+- **Description**: Create a new branch for your feature or bug fix.
+
+### 3. Submit a Pull Request
+- **Description**: Submit a pull request with a detailed description of your changes.
+
+## License
+- **File**: `LICENSE`
+- **Description**: This project is licensed under the MIT License.
+
+## Potential Improvements and Future Plans
+
+### 1. Enhanced Error Handling
+- **Description**: Improve error handling and logging for better debugging.
+- **Implementation**: Enhance error handling in `core/loop.py` and `modules/perception.py`.
+
+### 2. Additional MCP Servers
+- **Description**: Add support for more MCP servers to extend functionality.
+- **Implementation**: Extend `core/session.py` to support additional MCP servers.
+
+### 3. Improved Memory Management
+- **Description**: Enhance memory management for better context retention.
+- **Implementation**: Improve `modules/memory.py` for better memory retrieval and storage.
+
+### 4. Advanced Planning Strategies
+- **Description**: Implement more advanced planning strategies for better decision-making.
+- **Implementation**: Enhance `core/strategy.py` with more sophisticated planning algorithms.
+
+### 5. Enhanced User Interface
+- **Description**: Improve the Telegram bot interface for better user experience.
+- **Implementation**: Enhance `telegram_agent.py` with more interactive features.
+
+## Bugs and Issues
+
+### 1. Error Handling
+- **Description**: Some error handling mechanisms need improvement.
+- **Implementation**: Enhance error handling in `core/loop.py` and `modules/perception.py`.
+
+### 2. Memory Retrieval
+- **Description**: Memory retrieval could be more efficient.
+- **Implementation**: Improve memory retrieval in `modules/memory.py`.
+
+### 3. Tool Discovery
+- **Description**: Tool discovery could be more robust.
+- **Implementation**: Enhance tool discovery in `core/session.py`.
+
+## Future Vision
+
+### 1. Enhanced Integration
+- **Description**: Integrate more services and tools for enhanced functionality.
+- **Implementation**: Extend `core/session.py` to support more MCP servers.
+
+### 2. Advanced AI Capabilities
+- **Description**: Implement more advanced AI capabilities for better decision-making.
+- **Implementation**: Enhance `modules/decision.py` with more sophisticated AI models.
+
+### 3. Improved User Experience
+- **Description**: Enhance the user experience with more interactive features.
+- **Implementation**: Improve `telegram_agent.py` with more user-friendly features.
+
+### 4. Scalability
+- **Description**: Improve scalability to handle more users and tasks.
+- **Implementation**: Enhance `core/loop.py` and `core/session.py` for better scalability.
+
+### 5. Security
+- **Description**: Enhance security measures for better data protection.
+- **Implementation**: Improve security in `core/session.py` and `modules/memory.py`.
